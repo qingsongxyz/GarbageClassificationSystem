@@ -20,8 +20,8 @@ spring:
         namespace: @nacosNameSpace@
         group: GCS_GROUP
         server-addr: @nacosAddress@
-        access-key: ENC(FYNrbMjc4d3LIhfXn6vFaOQjDV6UOecFEGsuAEuaGdBw0AVmNXyNSlRnV0qvO+lr)
-        secret-key: ENC(5WFSfUBBTNhMJIuOfJC1UeXFe4maf5FUFl7qkQaa2o4BmNBEQ9rtw8IIU7EY0Eh5)
+        access-key: 
+        secret-key: 
         file-extension: yaml # 指定配置文件的格式为yaml
         ext-config:
           - dataId: nacos-client.yaml
