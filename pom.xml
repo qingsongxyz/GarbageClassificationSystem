@@ -279,8 +279,8 @@
             </activation>
             <properties>
                 <activatedProperties>dev</activatedProperties>
-                <nacosNameSpace>1bd8236f-dcda-463a-bd98-4e4f1222c816</nacosNameSpace>
-                <nacosAddress>120.46.201.254:8848</nacosAddress>
+                <nacosNameSpace></nacosNameSpace>
+                <nacosAddress></nacosAddress>
             </properties>
         </profile>
         <!--测试环境-->
@@ -288,8 +288,8 @@
             <id>test</id>
             <properties>
                 <activatedProperties>test</activatedProperties>
-                <nacosNameSpace>219a6bac-f5f3-4bbc-84a3-354179ffd20b</nacosNameSpace>
-                <nacosAddress>120.46.201.254:8848</nacosAddress>
+                <nacosNameSpace></nacosNameSpace>
+                <nacosAddress></nacosAddress>
             </properties>
         </profile>
         <!--生产环境-->
@@ -297,8 +297,8 @@
             <id>prod</id>
             <properties>
                 <activatedProperties>prod</activatedProperties>
-                <nacosNameSpace>77d0d51a-913f-4f68-84dc-5fd8850b1537</nacosNameSpace>
-                <nacosAddress>120.46.201.254:8848</nacosAddress>
+                <nacosNameSpace></nacosNameSpace>
+                <nacosAddress></nacosAddress>
             </properties>
         </profile>
     </profiles>
