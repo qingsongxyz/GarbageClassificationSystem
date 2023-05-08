@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.BroadcastMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.qingsongxyz.pojo.Broadcast">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="title" property="title" />
+        <result column="content" property="content" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+        <association property="userVO" javaType="com.qingsongxyz.vo.UserVO">
+            <result column="username" property="username" />
+            <result column="image" property="image" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, title, content, create_time, update_time, deleted, version
+    </sql>
+
+    <select id="getBroadcastById" resultMap="BaseResultMap">
+        select
+            b.id, b.user_id, b.title, b.content, b.create_time, u.username, u.image
+        from
+            broadcast b
+        left join
+            user u
+        on
+            b.user_id = u.id
+        where
+            b.deleted = 0 and u.deleted = 0 and b.id = #{id}
+    </select>
+
+    <select id="getBroadcastList" resultMap="BaseResultMap">
+        select
+            b.id, b.user_id, b.title, b.content, b.create_time, u.username, u.image
+        from
+            broadcast b
+        left join
+            user u
+        on
+            b.user_id = u.id
+        where
+            b.deleted = 0 and u.deleted = 0
+        <if test="title != null">
+            and b.title like concat('%', #{title}, '%')
+        </if>
+        <if test="start != null and number != null">
+            limit #{start}, #{number}
+        </if>
+    </select>
+
+    <select id="getBroadcastListCount" resultType="Integer">
+        select
+            count(*)
+        from
+            broadcast b
+        left join
+            user u
+        on
+            b.user_id = u.id
+        where
+            b.deleted = 0 and u.deleted = 0
+        <if test="title != null">
+            and b.title like concat('%', #{title}, '%')
+        </if>
+    </select>
+</mapper>

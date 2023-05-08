@@ -1,0 +1,18 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 5MB #设置上传文件最大的大小为5MB
+
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+logging:
+  level:
+    org:
+      springframework:
+        cloud:
+          openfeign: debug
+          sleuth: debug
+
+
+

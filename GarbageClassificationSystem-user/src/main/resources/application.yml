@@ -1,0 +1,22 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+logging:
+  level:
+    com:
+      qingsongxyz:
+        mapper: debug
+    io:
+      seata: info
+    org:
+      springframework:
+        data:
+          mongodb:
+            core:
+              MongoTemplate: debug
+        cloud:
+          openfeign: debug
+          sleuth: debug
+
+

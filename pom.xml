@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.qingsongxyz</groupId>
+    <artifactId>GarbageClassificationSystem</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <!-- 在父级工程或聚合工程中使用,做jar包的版本控制 -->
+    <packaging>pom</packaging>
+    <modules>
+        <module>GarbageClassificationSystem-commons</module>
+        <module>GarbageClassificationSystem-garbage</module>
+        <module>GarbageClassificationSystem-third-party</module>
+        <module>GarbageClassificationSystem-gateway</module>
+        <module>GarbageClassificationSystem-admin</module>
+        <module>GarbageClassificationSystem-user</module>
+        <module>GarbageClassificationSystem-auth</module>
+        <module>GarbageClassificationSystem-mall</module>
+        <module>GarbageClassificationSystem-station</module>
+    </modules>
+
+    <!-- 统一管理jar包 -->
+    <properties>
+      <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+      <maven.compiler.source>1.8</maven.compiler.source>
+      <maven.compiler.target>1.8</maven.compiler.target>
+      <!-- spring boot版本 2.2.2 -->
+      <springboot.version>2.2.2.RELEASE</springboot.version>
+      <!-- spring cloud版本 Hoxton.SR1 -->
+      <springcloud.version>Hoxton.SR1</springcloud.version>
+      <!-- spring cloud alibaba版本 2.1.1.RELEASE -->
+      <springcloud-alibaba.version>2.1.1.RELEASE</springcloud-alibaba.version>
+      <junit.version>4.12</junit.version>
+      <log4j.version>1.2.17</log4j.version>
+      <lombok.version>1.16.18</lombok.version>
+      <mysql.version>8.0.28</mysql.version>
+      <druid.version>1.2.8</druid.version>
+      <mybatis-plus.version>3.4.3.4</mybatis-plus.version>
+      <mybatis-plus-generator.version>3.5.2</mybatis-plus-generator.version>
+      <freemarker.version>2.3.31</freemarker.version>
+      <hutool.version>5.8.4</hutool.version>
+      <springfox.version>3.0.0</springfox.version>
+      <easyexcel.version>3.0.5</easyexcel.version>
+      <fastjson.version>1.2.80</fastjson.version>
+      <canal.version>1.1.4</canal.version>
+      <redisson.version>3.17.4</redisson.version>
+      <!--修改elasticsearch版本-->
+      <elasticsearch.version>7.9.2</elasticsearch.version>
+      <aliyun.imagerecog.version>1.0.8</aliyun.imagerecog.version>
+      <aliyun.dysmsapi.version>2.0.23</aliyun.dysmsapi.version>
+      <seata.version>0.9.0</seata.version>
+      <aliyun.sdk.version>3.7.4.ALL</aliyun.sdk.version>
+      <google.zxing.version>3.3.3</google.zxing.version>
+      <jasypt.version>3.0.4</jasypt.version>
+    </properties>
+
+    <!-- 子模块继承之后,锁定版本,子模块不用写版本号 在此只是声明依赖版本 并不引入 -->
+    <dependencyManagement>
+      <dependencies>
+        <dependency>
+          <groupId>org.springframework.boot</groupId>
+          <artifactId>spring-boot-dependencies</artifactId>
+          <version>${springboot.version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>org.springframework.cloud</groupId>
+          <artifactId>spring-cloud-dependencies</artifactId>
+          <version>${springcloud.version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+
+        <dependency>
+          <groupId>com.alibaba.cloud</groupId>
+          <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+          <version>${springcloud-alibaba.version}</version>
+          <type>pom</type>
+          <scope>import</scope>
+        </dependency>
+
+        <!-- mysql -->
+        <dependency>
+          <groupId>mysql</groupId>
+          <artifactId>mysql-connector-java</artifactId>
+          <version>${mysql.version}</version>
+        </dependency>
+
+        <!-- druid -->
+        <dependency>
+          <groupId>com.alibaba</groupId>
+          <artifactId>druid-spring-boot-starter</artifactId>
+          <version>${druid.version}</version>
+        </dependency>
+
+        <!-- mybatis-plus -->
+        <dependency>
+          <groupId>com.baomidou</groupId>
+          <artifactId>mybatis-plus-boot-starter</artifactId>
+          <version>${mybatis-plus.version}</version>
+        </dependency>
+
+        <!--mybatis-plus-generator-->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-generator</artifactId>
+            <version>${mybatis-plus-generator.version}</version>
+        </dependency>
+
+        <!--freemarker模版引擎-->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+        <!-- junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+
+        <!-- log4j -->
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>${log4j.version}</version>
+        </dependency>
+
+        <!-- lombok -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
+        <!-- hutool -->
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+            <version>${hutool.version}</version>
+        </dependency>
+
+        <!-- springfox -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-boot-starter</artifactId>
+            <version>${springfox.version}</version>
+        </dependency>
+
+        <!--alibaba Excel-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>easyexcel</artifactId>
+            <version>${easyexcel.version}</version>
+        </dependency>
+
+        <!--alibaba fastjson-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <!--alibaba canal-->
+        <dependency>
+            <groupId>com.alibaba.otter</groupId>
+            <artifactId>canal.client</artifactId>
+            <version>${canal.version}</version>
+        </dependency>
+
+        <!--redisson-->
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson</artifactId>
+            <version>${redisson.version}</version>
+        </dependency>
+
+        <!--修改elasticsearch版本-->
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-high-level-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch</groupId>
+            <artifactId>elasticsearch</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.elasticsearch.client</groupId>
+            <artifactId>elasticsearch-rest-client</artifactId>
+            <version>${elasticsearch.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>imagerecog20190930</artifactId>
+            <version>${aliyun.imagerecog.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>dysmsapi20170525</artifactId>
+            <version>${aliyun.dysmsapi.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.seata</groupId>
+            <artifactId>seata-all</artifactId>
+            <version>${seata.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.alipay.sdk</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>${aliyun.sdk.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>${google.zxing.version}</version>
+        </dependency>
+
+        <!-- jasypt依赖 -->
+        <dependency>
+            <groupId>com.github.ulisesbocchio</groupId>
+            <artifactId>jasypt-spring-boot-starter</artifactId>
+            <version>${jasypt.version}</version>
+        </dependency>
+      </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <!-- 避免过滤jks证书文件 -->
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+                <excludes>
+                    <exclude>**/*.jks</exclude>
+                </excludes>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>false</filtering>
+                <includes>
+                    <include>**/*.jks</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
+
+    <!-- 负责管理构件的发布 id需要与maven setting.xml中配置的远程库id一致 -->
+    <distributionManagement>
+        <repository>
+            <id>AliyunDockerRegistry</id>
+            <url>https://registry.cn-beijing.aliyuncs.com/qingsongxyz/gcs</url>
+        </repository>
+        <snapshotRepository>
+            <id>AliyunDockerRegistry</id>
+            <url>https://registry.cn-beijing.aliyuncs.com/qingsongxyz/gcs</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!--配置生产环境-->
+    <profiles>
+        <!--开发环境-->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <activatedProperties>dev</activatedProperties>
+                <nacosNameSpace>1bd8236f-dcda-463a-bd98-4e4f1222c816</nacosNameSpace>
+                <nacosAddress>120.46.201.254:8848</nacosAddress>
+            </properties>
+        </profile>
+        <!--测试环境-->
+        <profile>
+            <id>test</id>
+            <properties>
+                <activatedProperties>test</activatedProperties>
+                <nacosNameSpace>219a6bac-f5f3-4bbc-84a3-354179ffd20b</nacosNameSpace>
+                <nacosAddress>120.46.201.254:8848</nacosAddress>
+            </properties>
+        </profile>
+        <!--生产环境-->
+        <profile>
+            <id>prod</id>
+            <properties>
+                <activatedProperties>prod</activatedProperties>
+                <nacosNameSpace>77d0d51a-913f-4f68-84dc-5fd8850b1537</nacosNameSpace>
+                <nacosAddress>120.46.201.254:8848</nacosAddress>
+            </properties>
+        </profile>
+    </profiles>
+</project>

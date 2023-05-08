@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+    <title>Stomp Websocket测试</title>
+    <style>
+        body {
+            padding: 20px;
+        }
+
+        #console {
+            height: 450px;
+            overflow: auto;
+        }
+
+        .msg-color {
+            color: green;
+        }
+    </style>
+</head>
+<body onload="disconnect()">
+<noscript>
+    <h2>Sorry! Your browser doesn't support Javascript</h2>
+</noscript>
+<div>
+    <labal>连接用户</labal>
+    <input type="text" id="user"/>
+    <button id="connect" onclick="openDialog();">打开连接</button>
+</div>
+<div>
+    <labal>取消连接</labal>
+    <button id="disconnect" disabled="disabled" onclick="disconnect();">断开连接</button>
+</div>
+<div id="conversationDiv">
+    <labal>发送消息</labal>
+    <div>
+        <labal>内容</labal>
+        <input type="text" id="content"/>
+    </div>
+    <div>
+        <labal>发给谁</labal>
+        <input type="text" id="to"/>
+    </div>
+    <button id="sendMsg" onclick="sendMessage();">Send</button>
+</div>
+<div>
+    <labal>接收到的消息:</labal>
+    <p id="responseData"></p>
+</div>
+<script src="https://cdn.bootcss.com/sockjs-client/1.1.4/sockjs.min.js"></script>
+<script src="https://cdn.bootcss.com/stomp.js/2.3.3/stomp.min.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/axios/1.3.6/axios.min.js"></script>
+<script type="text/javascript">
+    var stompClient = null;
+    var username = null;
+
+    function openDialog() {
+        username = document.getElementById('user').value.trim();
+        if (username) {
+            var socket = new SockJS("http://localhost:8000/api/gcs-admin/ws");
+            stompClient = Stomp.over(socket);
+            stompClient.heartbeat.outgoing = 0;
+            stompClient.heartbeat.incoming = 0;
+            //连接
+            connect();
+        }
+    }
+
+    function connect() {
+        stompClient.connect({
+            username,
+            type: "CHAT"
+        }, onConnected, onError);
+    }
+
+    function onConnected(frame) {
+        console.log("Connected: " + frame);
+        stompClient.subscribe("/topic/chat." + username, onMessageReceived,
+            {
+                ack: "client",
+                "x-queue-name": "chat." + username,
+                id: username,
+                durable: true,
+                "auto-delete": false,
+            }
+        );
+    }
+
+    function onError(error) {
+        console.log("STOMP error: " + error);
+        //1s后重新连接
+        setTimeout(connect, 1000);
+        console.log("STOMP: Reconnecting in 1 second");
+    }
+
+    function sendMessage() {
+        let content = document.getElementById("content");
+        let messageContent = content.value.trim();
+        let chatUser = document.getElementById("to").value.trim();
+
+        if (messageContent && stompClient) {
+            let chatMessage = {
+                type: "CHAT",
+                source: username,
+                target: chatUser,
+                content: messageContent,
+                ack: false,
+                time: new Date()
+            };
+
+            axios.post(`http://localhost:8000/api/gcs-admin/webSocket/chat`, JSON.stringify(chatMessage), {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(
+                (res) => {
+                    console.log("发送消息: ", res);
+                    content.innerHTML = "";
+                },
+                (err) => {
+                    console.log(err);
+                }
+            );
+        }
+        event.preventDefault();
+    }
+
+    function onMessageReceived(payload) {
+        let messageID = payload.headers["message-id"];
+        let content = payload.body;
+        try {
+            let message = JSON.parse(content);
+            let responseData = document.getElementById('responseData');
+            let p = document.createElement('p');
+            p.style.wordWrap = 'break-word';
+            p.appendChild(document.createTextNode(message.content));
+            responseData.appendChild(p);
+            payload.ack({"message-id": messageID, content});
+        } catch (error) {
+            console.log(error);
+            payload.nack({"message-id": messageID, content});
+        }
+    }
+
+    function disconnect() {
+        console.log("Disconnected");
+        if (stompClient != null) {
+            stompClient.disconnect();
+        }
+        document.getElementById("connect").disabled = false;
+        document.getElementById("disconnect").disabled = true;
+
+        let responseData = document.getElementById("responseData");
+        responseData.innerHTML = "";
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.RolePathMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.qingsongxyz.pojo.RolePath">
+        <id column="id" property="id" />
+        <result column="role_id" property="roleId" />
+        <result column="path_id" property="pathId" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+        <association property="pathVO" javaType="com.qingsongxyz.vo.PathVO">
+            <result column="pathId" property="id"/>
+            <result column="path" property="path"/>
+            <result column="description" property="description"/>
+        </association>
+        <association property="roleVO" javaType="com.qingsongxyz.vo.RoleVO">
+            <result column="roleId" property="id" />
+            <result column="role" property="role" />
+            <result column="name" property="name" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, role_id, path_id, create_time, update_time, deleted, version
+    </sql>
+
+    <select id="getRolePathById" resultMap="BaseResultMap">
+        select
+            rp.id, rp.role_id, rp.path_id, r.id roleId, r.role, r.name, p.id pathId, p.path, p.description
+        from
+            role_path rp
+        left join
+            role r
+        on
+            rp.role_id = r.id
+        left join
+            path p
+        on
+            rp.path_id = p.id
+        where
+            rp.id = #{id}
+    </select>
+</mapper>

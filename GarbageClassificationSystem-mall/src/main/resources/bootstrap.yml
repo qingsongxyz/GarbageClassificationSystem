@@ -1,0 +1,62 @@
+server:
+  port: 8083
+
+jasypt:
+  encryptor:
+    password: ${JASYPT_ENCRYPTOR_PASSWORD} # 秘钥
+
+spring:
+  application:
+    name: GarbageClassificationSystem-mall
+
+  profiles:
+    active: @activatedProperties@
+
+  cloud:
+    nacos:
+      discovery:
+        service: ${spring.application.name}
+      config:
+        namespace: @nacosNameSpace@
+        group: GCS_GROUP
+        server-addr: @nacosAddress@
+        access-key: ENC(FYNrbMjc4d3LIhfXn6vFaOQjDV6UOecFEGsuAEuaGdBw0AVmNXyNSlRnV0qvO+lr)
+        secret-key: ENC(5WFSfUBBTNhMJIuOfJC1UeXFe4maf5FUFl7qkQaa2o4BmNBEQ9rtw8IIU7EY0Eh5)
+        file-extension: yaml # 指定配置文件的格式为yaml
+        ext-config:
+          - dataId: nacos-client.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: gcs-mall-db.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: seata.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: aliyun.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: rabbitmq.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: redis.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: canal-mall.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: mybatis-plus.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: feign.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: acturator.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: zipkin.yaml
+            group: GCS_GROUP
+            refresh: true
+          - dataId: sentinel-mall.yaml
+            group: GCS_GROUP
+            refresh: true

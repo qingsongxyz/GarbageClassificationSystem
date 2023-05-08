@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.GarbageDeliveryMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.qingsongxyz.pojo.GarbageDelivery">
+        <id column="id" property="id" />
+        <result column="user_id" property="userId" />
+        <result column="total" property="total" />
+        <result column="station_address" property="stationAddress" />
+        <result column="status" property="status" />
+        <result column="addition" property="addition" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+        <association property="userVO" javaType="com.qingsongxyz.vo.UserVO">
+            <result column="username" property="username" />
+            <result column="image" property="image" />
+            <result column="email" property="email" />
+            <result column="phone" property="phone" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, total, create_time, update_time, deleted, version
+    </sql>
+
+    <select id="getGarbageDeliveryListByUserIdAndStatue" resultMap="BaseResultMap">
+        select
+            gd.id, gd.user_id, gd.total, gd.station_address, gd.status, gd.addition, gd.create_time, u.username, u.image, u.email, u.phone
+        from
+            garbage_delivery gd
+        left join
+            user u
+        on
+            gd.user_id = u.id
+        where
+            gd.deleted = 0 and u.deleted = 0 and gd.user_id = #{userId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="start != null and number != null">
+            limit #{start}, #{number}
+        </if>
+    </select>
+
+    <select id="getGarbageDeliveryCountByUserIdAndStatus" resultType="Integer">
+        select
+            count(*)
+        from
+            garbage_delivery gd
+        where
+            gd.deleted = 0 and gd.user_id = #{userId}
+        <if test="status != null">
+            and status = #{status}
+        </if>
+    </select>
+
+</mapper>

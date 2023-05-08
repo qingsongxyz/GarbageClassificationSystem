@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.GoodMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.qingsongxyz.pojo.Good">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="category_id" property="categoryId" />
+        <result column="image" property="image" />
+        <result column="score" property="score" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+        <association property="goodCategoryVO" javaType="com.qingsongxyz.vo.GoodCategoryVO">
+            <result column="category" property="category"/>
+        </association>
+        <association property="storage" javaType="com.qingsongxyz.pojo.Storage">
+            <result column="storage" property="storage"/>
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, `name`, category_id, image, score, create_time, update_time, deleted, version
+    </sql>
+
+    <select id="getGoodList" resultMap="BaseResultMap">
+        select
+            a.id, a.name, a.category_id, a.image, a.score, b.category, s.storage
+        from
+             good a
+        left join
+            (select
+                g.id, gc.category
+            from
+                good g
+            left join
+                good_category gc
+            on
+                g.category_id = gc.id
+            where
+                g.deleted = 0 and gc.deleted = 0) b
+        on
+            a.id = b.id
+        left join
+            storage s
+        on
+            a.id = s.good_id
+        where
+            s.deleted = 0
+            <if test="name != null">
+                and a.name like concat('%',#{name},'%')
+            </if>
+            <if test="category != null">
+                and b.category = #{category}
+            </if>
+            <if test="start != null and number != null">
+                limit #{start}, #{number}
+            </if>
+    </select>
+
+    <select id="getGoodCount" resultType="Integer">
+        select
+            count(*)
+        from
+            good g
+        left join
+            good_category gc
+        on
+            g.category_id = gc.id
+         where
+            g.deleted = 0 and gc.deleted = 0
+            <if test="name != null">
+                and g.name like concat('%',#{name},'%')
+            </if>
+            <if test="category != null">
+                and gc.category = #{category}
+            </if>
+    </select>
+</mapper>

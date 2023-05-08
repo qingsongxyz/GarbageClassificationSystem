@@ -1,0 +1,14 @@
+spring:
+  mvc:
+    throw-exception-if-no-handler-found: true
+
+logging:
+  level:
+    com:
+      qingsongxyz:
+        mapper: debug
+    org:
+      springframework:
+        cloud:
+          openfeign: debug
+          sleuth: debug

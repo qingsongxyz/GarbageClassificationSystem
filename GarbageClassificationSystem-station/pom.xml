@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.qingsongxyz</groupId>
+        <artifactId>GarbageClassificationSystem</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>GarbageClassificationSystem-station</artifactId>
+    <name>GarbageClassificationSystem-station</name>
+    <description>垃圾分类系统-垃圾设备模块</description>
+
+    <dependencies>
+        <!--公共实体模块-->
+        <dependency>
+          <groupId>com.qingsongxyz</groupId>
+          <artifactId>GarbageClassificationSystem-commons</artifactId>
+          <version>${project.version}</version>
+          <exclusions>
+            <exclusion>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-openfeign</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+            </exclusion>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+            </exclusion>
+          </exclusions>
+        </dependency>
+
+        <!-- nacos配置中心依赖 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+
+        <!-- nacos注册中心依赖 -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.junit.vintage</groupId>
+                    <artifactId>junit-vintage-engine</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+            <scope>runtime</scope>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
+
+    <build>
+       <finalName>${project.artifactId}-${project.version}</finalName>
+       <plugins>
+          <plugin>
+             <groupId>org.springframework.boot</groupId>
+             <artifactId>spring-boot-maven-plugin</artifactId>
+             <version>2.2.2.RELEASE</version>
+             <configuration>
+                    <fork>true</fork>
+                    <skipTests>true</skipTests>
+                    <includeSystemScope>true</includeSystemScope>
+                    <jvmArguments>-Dfile.encoding=utf-8</jvmArguments>
+                    <layout>ZIP</layout>
+                    <mainClass>com.qingsongxyz.GarbageClassificationSystemStationApplication</mainClass>
+                     <includes>
+                         <include>
+                           <groupId>com.qingsongxyz</groupId>
+                           <artifactId>GarbageClassificationSystem-commons</artifactId>
+                         </include>
+                     </includes>
+             </configuration>
+             <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+             </executions>
+          </plugin>
+
+          <!-- 用于将依赖抽离出来 -->
+          <plugin>
+               <groupId>org.apache.maven.plugins</groupId>
+               <artifactId>maven-dependency-plugin</artifactId>
+               <version>3.1.1</version>
+               <executions>
+                   <execution>
+                       <id>copy-dependencies</id>
+                       <phase>package</phase>
+                       <goals>
+                           <goal>copy-dependencies</goal>
+                       </goals>
+                       <configuration>
+                            <outputDirectory>${project.build.directory}/lib</outputDirectory>
+  <!--                             是否排除依赖传递性 -->
+                            <excludeTransitive>false</excludeTransitive>
+  <!--                             是否去掉依赖版本信息 -->
+                            <stripeVersion>false</stripeVersion>
+  <!--                             包含范围 -->
+                            <includeScope>runtime</includeScope>
+                       </configuration>
+                   </execution>
+               </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>com.spotify</groupId>
+            <artifactId>docker-maven-plugin</artifactId>
+            <version>1.0.0</version>
+            <configuration>
+                <!-- 镜像名称 -->
+                <imageName>qingsongxyz/gcs-station</imageName>
+                <!-- 镜像标签 -->
+                <imageTags>
+                  <imageTag>${project.version}</imageTag>
+                </imageTags>
+                <!-- 指定maven setting.xml配置文件中的docker库身份信息 -->
+                <serverId>AliyunDockerRegistry</serverId>
+                <!-- 指定 Dockerfile 路径-->
+                <dockerDirectory>${project.basedir}</dockerDirectory>
+                <resources>
+                   <resource>
+                     <targetPath>/tmp</targetPath>
+                     <directory>${project.build.directory}</directory>
+                     <include>${project.build.finalName}.jar</include>
+                   </resource>
+                </resources>
+            </configuration>
+            <executions>
+                <execution>
+                    <id>build-image</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>build</goal>
+                    </goals>
+                </execution>
+                <execution>
+                    <id>tag-image</id>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>tag</goal>
+                    </goals>
+                    <configuration>
+                        <image>qingsongxyz/gcs-station:${project.version}</image>
+                        <newName>registry.cn-beijing.aliyuncs.com/qingsongxyz/gcs:gcs-station</newName>
+                    </configuration>
+                </execution>
+                <execution>
+                    <id>push-image</id>
+                    <phase>deploy</phase>
+                    <goals>
+                        <goal>push</goal>
+                    </goals>
+                    <configuration>
+                        <imageName>registry.cn-beijing.aliyuncs.com/qingsongxyz/gcs:gcs-station</imageName>
+                    </configuration>
+                </execution>
+            </executions>
+        </plugin>
+       </plugins>
+    </build>
+</project>

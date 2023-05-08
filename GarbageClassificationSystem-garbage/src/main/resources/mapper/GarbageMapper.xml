@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.GarbageMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="Garbage">
+        <id column="id" property="id" />
+        <result column="name" property="name" />
+        <result column="category_id" property="categoryId" />
+        <result column="unit" property="unit" />
+        <result column="score" property="score" />
+        <result column="image" property="image" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+        <association property="garbageCategory" javaType="GarbageCategory">
+            <!--连表查询时表字段重复 使用别名处理-->
+            <result column="category_name" property="name" />
+        </association>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, `name`, category_id, unit, score, image, create_time, update_time, deleted, version
+    </sql>
+
+    <select id="getGarbageById" resultMap="BaseResultMap">
+        select
+            g.id, g.name, g.unit, g.score, g.image, gc.name category_name
+        from
+            garbage g, garbage_category gc
+        where
+            g.category_id = gc.id and g.id = #{id} and g.deleted = 0;
+    </select>
+
+    <select id="getGarbageList" resultMap="BaseResultMap">
+        select
+            g.id, g.name, g.unit, g.score, g.image, gc.name category_name
+        from
+            garbage g, garbage_category gc
+        where
+            g.category_id = gc.id and g.deleted = 0
+        <if test="garbageName != null">
+            and g.name like concat('%', #{garbageName}, '%')
+        </if>
+        <if test="categoryName != null">
+            and gc.name = #{categoryName}
+        </if>
+        <if test="start != null and number != null">
+            limit #{start}, #{number}
+        </if>
+    </select>
+
+    <select id="getGarbageCountGroupByCategory" resultType="java.util.HashMap">
+        select
+            gc.name as name, count(*) as value
+        from
+            garbage g
+        left join
+            garbage_category gc
+        on
+            g.category_id = gc.id
+        group by
+            gc.name
+    </select>
+</mapper>

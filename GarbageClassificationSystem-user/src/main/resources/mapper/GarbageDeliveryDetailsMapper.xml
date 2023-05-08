@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qingsongxyz.mapper.GarbageDeliveryDetailsMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.qingsongxyz.pojo.GarbageDeliveryDetails">
+        <id column="id" property="id" />
+        <result column="delivery_id" property="deliveryId" />
+        <result column="garbage_name" property="garbageName" />
+        <result column="garbage_image" property="garbageImage" />
+        <result column="garbage_category" property="garbageCategory" />
+        <result column="garbage_unit" property="garbageUnit" />
+        <result column="garbage_score" property="garbageScore" />
+        <result column="count" property="count" />
+        <result column="sum" property="sum" />
+        <result column="flag" property="flag" />
+        <result column="create_time" property="createTime" />
+        <result column="update_time" property="updateTime" />
+        <result column="deleted" property="deleted" />
+        <result column="version" property="version" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, delivery_id, garbage_name, garbage_image, garbage_category, garbage_unit, garbage_score, count, sum, create_time, update_time, deleted, version
+    </sql>
+
+</mapper>

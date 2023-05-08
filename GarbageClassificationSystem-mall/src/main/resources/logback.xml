@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!--
+        日志输出格式
+        %-5level 日志级别 设置为5个字符 负号表示左对齐
+        %d{yyyy-MM-dd HH:mm:ss.SSS} 日期
+        %highlight()：颜色，info为蓝色，warn为浅红，error为加粗红，debug为黑色
+        %c 当前类全限定名
+        %M 当前执行方法
+        %L 行号
+        %thread 线程名称
+        %m 日志信息
+        %n 换行
+    -->
+    <property name="consolePattern" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- [%15.15(%thread)] %cyan(%-40.40(%logger{40})) : %m%n"></property>
+    <property name="filePattern" value="%d{HH:mm:ss.SSS} [%thread] %-5level %c %M %L - %m%n"></property>
+
+    <!-- 输出文件的路径 -->
+    <property name="logDir" value="logs/gcs-mall"></property>
+
+    <!--
+        控制台输出
+        System.out 黑色字体
+        System.err 红色字体
+    -->
+    <appender name="consoleAppender" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${consolePattern}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- 文件输出 -->
+    <!--
+        低于ERROR级别
+        trace < debug < info < warn < error
+    -->
+    <appender name="info_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件拆分规则(按照时间和文件大小) -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 按天划分 -->
+            <FileNamePattern>${logDir}/info/%d{yyyy-MM-dd}.info%i.log</FileNamePattern>
+            <!-- 保存期限为30天 -->
+            <MaxHistory>30</MaxHistory>
+            <!-- 按照文件大小划分 -->
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${filePattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>DENY</onMatch><!-- 如果命中ERROR就禁止这条日志 -->
+            <onMismatch>ACCEPT</onMismatch><!-- 如果没有命中就使用这条规则 -->
+        </filter>
+    </appender>
+
+    <!-- error级别 -->
+    <appender name="error_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 文件拆分规则(按照时间和文件大小) -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 按天划分 -->
+            <FileNamePattern>${logDir}/error/%d{yyyy-MM-dd}-error%i.log</FileNamePattern>
+            <!-- 保存期限为30天 -->
+            <MaxHistory>30</MaxHistory>
+            <!-- 按照文件大小划分 -->
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${filePattern}</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level> <!-- 低于ERROR级别的日志（debug,info）将被拒绝 -->
+        </filter>
+    </appender>
+
+    <!-- 异步输出控制台日志 -->
+    <appender name="asyncConsoleAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="consoleAppender" />
+    </appender>
+
+    <!-- 异步输出INFO日志 -->
+    <appender name="asyncInfoAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="info_log" />
+    </appender>
+
+    <!-- 异步输出ERROR日志 -->
+    <appender name="asyncErrorAppender" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="error_log" />
+    </appender>
+
+    <!-- 配置多个appender 输出日志 -->
+    <root level="INFO">
+        <appender-ref ref="asyncConsoleAppender" />
+    </root>
+
+    <logger name="com.qingsongxyz" level="INFO">
+        <appender-ref ref="asyncInfoAppender" />
+        <appender-ref ref="asyncErrorAppender" />
+    </logger>
+
+    <logger name="com.qingsongxyz.mapper" level="DEBUG">
+        <appender-ref ref="asyncInfoAppender" />
+        <appender-ref ref="asyncErrorAppender" />
+    </logger>
+</configuration>
